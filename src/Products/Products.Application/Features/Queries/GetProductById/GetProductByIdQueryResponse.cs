@@ -1,0 +1,7 @@
+namespace Products.Application.Features.Queries.GetProductById;
+
+public record GetProductByIdQueryResponse
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+}
