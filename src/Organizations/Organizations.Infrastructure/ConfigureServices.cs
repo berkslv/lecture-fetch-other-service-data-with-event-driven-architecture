@@ -21,7 +21,7 @@ public static class ConfigureServices
         services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
-            options.UseSqlite(configuration.GetConnectionString("DefaultConnection"));
+            options.UseSqlite("Data Source=../../../organizations-db.sql");
         });
 
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());

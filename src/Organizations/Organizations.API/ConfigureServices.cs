@@ -43,6 +43,12 @@ public static class ConfigureServices
         var messageBroker = configuration.GetSection("MessageBroker");
         services.AddMassTransit(cfg =>
         {
+            cfg.AddEntityFrameworkOutbox<ApplicationDbContext>(o =>
+            {
+                o.QueryDelay = TimeSpan.FromSeconds(5);
+                o.UseSqlite().UseBusOutbox();
+            });
+
             cfg.SetKebabCaseEndpointNameFormatter();
 
             cfg.AddConsumers(Assembly.GetExecutingAssembly());

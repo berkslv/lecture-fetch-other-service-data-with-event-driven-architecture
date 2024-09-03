@@ -10,7 +10,7 @@ namespace Products.API.Controllers;
 public class ProductsController : BaseController
 {
     [HttpPost]
-    public async Task<ActionResult<Guid>> CreateUnit([FromQuery] CreateProductCommand command)
+    public async Task<ActionResult<Guid>> CreateProduct([FromQuery] CreateProductCommand command)
     {
         return await Mediator.Send(command);
     }

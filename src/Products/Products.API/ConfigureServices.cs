@@ -1,6 +1,7 @@
 using System.Reflection;
 using Elasticsearch.Net;
 using MassTransit;
+using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.AspNetCore.Mvc;
 using Products.API.Filters;
 using Products.Infrastructure.Persistence;
@@ -44,6 +45,12 @@ public static class ConfigureServices
         var messageBroker = configuration.GetSection("MessageBroker");
         services.AddMassTransit(cfg =>
         {
+            cfg.AddEntityFrameworkOutbox<ApplicationDbContext>(o =>
+            {
+                o.QueryDelay = TimeSpan.FromSeconds(5);
+                o.UseSqlite().UseBusOutbox();
+            });
+
             cfg.SetKebabCaseEndpointNameFormatter();
 
             cfg.AddConsumers(Assembly.GetExecutingAssembly());

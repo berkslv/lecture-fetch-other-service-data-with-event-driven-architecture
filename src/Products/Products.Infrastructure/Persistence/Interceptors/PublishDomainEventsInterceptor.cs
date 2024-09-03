@@ -44,11 +44,11 @@ public class PublishDomainEventsInterceptor : SaveChangesInterceptor
             .SelectMany(e => e.DomainEvents)
             .ToList();
 
-        entities.ToList().ForEach(e => e.ClearDomainEvents());
-
         foreach (var domainEvent in domainEvents)
         {
             await _publisher.Publish(domainEvent);
         }
+
+        entities.ForEach(e => e.ClearDomainEvents());
     }
 }
