@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Products.Domain.Entities.Base;
+namespace Organizations.Domain.Entities.Base;
 
-public abstract class BaseEntity
+public abstract class DispatchableEntity
 {
 
     private readonly List<object> _domainEvents = new();

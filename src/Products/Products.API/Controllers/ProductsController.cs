@@ -3,12 +3,14 @@ using Products.API.Controllers.Base;
 using Products.Application.Features.Commands.CreateProduct;
 using Products.Application.Features.Queries.GetProductById;
 using Products.Application.Features.Queries.GetProducts;
+using Products.Application.Interfaces;
 
 namespace Products.API.Controllers;
 
 [Route("api/products")]
 public class ProductsController : BaseController
 {
+    
     [HttpPost]
     public async Task<ActionResult<Guid>> CreateProduct([FromQuery] CreateProductCommand command)
     {

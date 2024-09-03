@@ -1,9 +1,8 @@
 using System.Reflection;
-using Elasticsearch.Net;
 using MassTransit;
-using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.AspNetCore.Mvc;
 using Products.API.Filters;
+using Products.Infrastructure;
 using Products.Infrastructure.Persistence;
 using Serilog;
 using Serilog.Sinks.Elasticsearch;
@@ -39,22 +38,16 @@ public static class ConfigureServices
 
         return services;
     }
-
+    
     private static IServiceCollection RegisterMassTransitServices(this IServiceCollection services, IConfiguration configuration)
     {
         var messageBroker = configuration.GetSection("MessageBroker");
         services.AddMassTransit(cfg =>
         {
-            cfg.AddEntityFrameworkOutbox<ApplicationDbContext>(o =>
-            {
-                o.QueryDelay = TimeSpan.FromSeconds(5);
-                o.UseSqlite().UseBusOutbox();
-            });
-
             cfg.SetKebabCaseEndpointNameFormatter();
 
             cfg.AddConsumers(Assembly.GetExecutingAssembly());
-
+            
             cfg.UsingRabbitMq((context, config) =>
             {
                 config.UseSendFilter(typeof(CorrelationSendFilter<>), context);
@@ -62,17 +55,23 @@ public static class ConfigureServices
                 config.UseConsumeFilter(typeof(CorrelationConsumeFilter<>), context);
 
                 config.UseMessageRetry(r => r.Exponential(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(5)));
-
                 config.Host(messageBroker["Host"], messageBroker["VirtualHost"], h =>
                 {
                     h.Username(messageBroker["Username"]!);
                     h.Password(messageBroker["Password"]!);
                 });
-
+                
                 config.ConfigureEndpoints(context);
             });
-        });
+            
+            cfg.AddEntityFrameworkOutbox<ApplicationDbContext>(o =>
+            {
+                o.QueryDelay = TimeSpan.FromSeconds(5);
+                o.UseSqlServer().UseBusOutbox();
+            });
 
+        });
+        
         return services;
     }
 

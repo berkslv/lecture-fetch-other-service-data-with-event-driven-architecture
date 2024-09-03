@@ -13,7 +13,10 @@ Then run the applications.
 
 ## Ports
 
-- localhost:5051 Organizations API
-- localhost:5052 Products API
-- localhost:5601 Kibana
-- localhost:15672 RabbitMQ Dashboard
+| Port            | Service             | Credentials   |
+|-----------------|---------------------|---------------|
+| localhost:5051  | Organizations API   |               |
+| localhost:5052  | Products API        |               |
+| localhost:5601  | Kibana              |               |
+| localhost:1433  | SQL Server          | SA / Passw0rd |
+| localhost:15672 | RabbitMQ            | guest / guest |

@@ -17,10 +17,9 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-        builder.AddInboxStateEntity();
-        builder.AddOutboxStateEntity();
-        builder.AddOutboxMessageEntity();
+        builder.AddInboxStateEntity(entity => entity.ToTable("InboxState", "meta"));
+        builder.AddOutboxStateEntity(entity => entity.ToTable("OutboxState", "meta"));
+        builder.AddOutboxMessageEntity(entity => entity.ToTable("OutboxMessage", "meta"));
     }
 }

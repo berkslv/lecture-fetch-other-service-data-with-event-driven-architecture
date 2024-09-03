@@ -1,3 +1,4 @@
+using MassTransit;
 using MediatR;
 using Products.Application.Interfaces;
 using Products.Domain.Entities;
@@ -13,10 +14,13 @@ public record CreateProductCommand : IRequest<Guid>
 public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Guid>
 {
     private readonly IApplicationDbContext _context;
+    
+    private readonly IPublishEndpoint _publishEndpoint;
 
-    public CreateProductCommandHandler(IApplicationDbContext context)
+    public CreateProductCommandHandler(IApplicationDbContext context, IPublishEndpoint publishEndpoint)
     {
-        _context = context;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
     }
 
     public async Task<Guid> Handle(CreateProductCommand request, CancellationToken cancellationToken)
@@ -25,14 +29,14 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
         {
             Name = request.Name
         };
-        
+
+        await _context.Products.AddAsync(product, cancellationToken);
+                
         product.AddDomainEvent(new ProductCreatedEvent
         {
             Id = product.Id,
             Name = product.Name
         });
-
-        _context.Products.Add(product);
         
         await _context.SaveChangesAsync(cancellationToken);
 

@@ -2,7 +2,7 @@ using Products.Domain.Entities.Base;
 
 namespace Products.Domain.Entities;
 
-public class Product : BaseEntity, IEntity
+public class Product : DispatchableEntity, IEntity
 {
     public string Name { get; set; } = string.Empty;
     public Guid Id { get; set; }

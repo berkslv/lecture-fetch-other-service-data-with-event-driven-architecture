@@ -9,17 +9,29 @@ public record GetProductsQuery : IRequest<List<GetProductsQueryResponse>>;
 
 public class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, List<GetProductsQueryResponse>>
 {
-    private readonly IApplicationDbContext _context;
 
-    public GetProductsQueryHandler(IApplicationDbContext context)
+    public GetProductsQueryHandler()
     {
-        _context = context;
     }
 
     public async Task<List<GetProductsQueryResponse>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
     {
-        var products = await _context.Products.ToListAsync(cancellationToken);
-
+        var products = new List<GetProductsQueryResponse>
+        {
+            new GetProductsQueryResponse
+            {
+                Id = Guid.NewGuid(),
+                Name = "Product 1",
+                Created = DateTime.Now
+            },
+            new GetProductsQueryResponse
+            {
+                Id = Guid.NewGuid(),
+                Name = "Product 2",
+                Created = DateTime.Now
+            }
+        };
+        
         return products.Select(product => new GetProductsQueryResponse
         {
             Id = product.Id,

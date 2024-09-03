@@ -1,3 +1,4 @@
+using MassTransit;
 using NSwag;
 using Products.API;
 using Products.Application;
@@ -34,4 +35,3 @@ app.UseExceptionHandler();
 app.MapControllers();
 
 await app.RunAsync();
-
